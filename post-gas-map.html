@@ -1,30 +1,85 @@
+
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
+    <title>WP-HW5</title>
+    <meta charset="utf-8">
     <style>
-       #map {
-        height: 400px;
-        width: 100%;
-       }
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
     </style>
-</head>
-<body>
-	<h3>My Google Maps Demo</h3>
-    <div id="map"></div>
-	<script>
-		function initMap() {
-			var uluru = {lat: -25.363, lng: 131.044};
-			var map = new 
-			google.maps.Map(document.getElementById('map'), {
-            zoom: 4,
-            center: uluru
-			});
-			var marker = new google.maps.Marker({
-			position: uluru,
-			map: map
-			});
-		}
+    <script>
+      var map;
+      var infowindow;
+      function initMap() {
+        var pyrmont = {lat: 24.178803,  lng:120.646666};
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: pyrmont,
+            zoom: 15
+        });
+        infowindow = new google.maps.InfoWindow();
+        var service = new google.maps.places.PlacesService(map);
+        service.nearbySearch({
+            location: pyrmont,
+            radius: 2500,
+            keyword:"加油站",
+        }, callback);
+        service.nearbySearch({
+            location: pyrmont,
+            radius: 2500,
+            keyword:"郵局",
+        }, callback1);
+      }
+      function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+                createMarker(results[i]);
+            }
+        }
+      }
+      function callback1(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            for (var i = 0; i < results.length; i++) {
+                createMarker1(results[i]);
+            }
+        }
+      }
+      function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+            map: map,
+            icon: "gas.png",
+            position: place.geometry.location
+        });
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            infowindow.setContent("<h1>"+place.name+"</h1>"+"<br>"+"<h2>"+place.vicinity+"<h2>");
+            infowindow.open(map, this);
+        });
+      }
+      function createMarker1(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+            map: map,
+            icon: "mail.png",
+            position: place.geometry.location
+        });
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            infowindow.setContent("<h1>"+place.name+"</h1>"+"<br>"+"<h2>"+place.vicinity+"<h2>");
+            infowindow.open(map, this);
+        });
+      }
     </script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTqpx76khCSEl4isalGFkS0qWqZmNe1Y0&callback=initMap"></script>
-</body>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTqpx76khCSEl4isalGFkS0qWqZmNe1Y0&libraries=places&callback=initMap" async defer></script>
+    </body>
 </html>
+
+
